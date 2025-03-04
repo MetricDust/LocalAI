@@ -12,14 +12,11 @@ const Chat = ({ selectedLLM }) => {
   const [response, setResponse] = useState("");
   const abortControllerRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  // const [thinking, setThinking] = useState("");
-  // const [open, setOpen] = useState(false);
-
+  
   useEffect(() => {
     setResponse("");
     setPrompt("");
     setQuestion("");
-    // setThinking("");
   }, [selectedLLM]);
 
   const handleKeyDown = (e) => {
@@ -35,7 +32,6 @@ const Chat = ({ selectedLLM }) => {
     setLoading(true);
     setQuestion(prompt);
     abortControllerRef.current = new AbortController();
-    // setThinking("");
 
     try {
       const res = await fetch(`${API_BASE_URL}/chat`, {
@@ -57,9 +53,6 @@ const Chat = ({ selectedLLM }) => {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let aiResponse = "";
-      let is_cleaned = false;
-      let cleanedData = "";
-      let thinkData = "";
 
       while (true) {
         const { value, done } = await reader.read();
@@ -67,26 +60,10 @@ const Chat = ({ selectedLLM }) => {
 
         const chunk = decoder.decode(value, { stream: true });
 
-        // if (selectedLLM === "deepseek-r1:1.5b") {
-        //   if (chunk.includes("</think>")) {
-        //     is_cleaned = true;
-        //   }
-
-        //   if (is_cleaned && !chunk.includes("</think>")) {
-        //     cleanedData += chunk;
-        //     let res = marked.parse(cleanedData);
-        //     setResponse(res);
-        //   } else {
-        //     thinkData += chunk;
-        //     let res = marked.parse(thinkData);
-        //     // setThinking(res);
-        //   }
-        // } else {
         aiResponse += chunk;
 
         let res = marked.parse(aiResponse);
         setResponse(res);
-        // }
       }
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -102,7 +79,6 @@ const Chat = ({ selectedLLM }) => {
     setResponse("");
     setPrompt("");
     setQuestion("");
-    // setThinking("");
   };
 
   const stopChat = () => {
@@ -131,25 +107,6 @@ const Chat = ({ selectedLLM }) => {
             Thinking ... 🤔
           </span>
         ) : null}
-
-        {/* {thinking && (
-          <>
-            <div className="text-secondary">
-              I was Talking to My Self, Do you want to check out ...
-              <button className="btn_style ms-5" onClick={() => setOpen(!open)}>
-                {open ? "No, It's fine" : "Yes, Show me"}
-              </button>
-            </div>
-
-            {open && (
-              <div
-                className="thinking my-2"
-                id="thinking"
-                dangerouslySetInnerHTML={{ __html: thinking }}
-              ></div>
-            )}
-          </>
-        )} */}
 
         {response && (
           <div
