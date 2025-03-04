@@ -1,0 +1,112 @@
+:root {
+  --theme1: rgba(13, 17, 23, 1);
+  --theme2: rgba(1, 4, 9, 1);
+  --theme3: rgba(33, 150, 243, 0.1);
+  --theme4: rgba(33, 150, 243, 0.2);
+  --theme5: rgba(255, 255, 255, 0.5);
+}
+body {
+  background-color: var(--theme1);
+  color: white;
+}
+
+.side_nav {
+  background-color: var(--theme2);
+  height: 99vh;
+}
+
+.link {
+  background-color: var(--theme3);
+  color: white;
+  padding: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.link:hover {
+  background-color: var(--theme4);
+}
+
+.all_chat {
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.top_section {
+  height: calc(99vh - 90px);
+  overflow-y: scroll;
+  padding-top: 15px !important;
+}
+
+.top_section::-webkit-scrollbar {
+  width: 5px;
+  height: 5px !important;
+  background-color: var(--theme2);
+  display: block !important;
+}
+.top_section::-webkit-scrollbar-thumb {
+  background: var(--theme5);
+}
+
+.bottom_section {
+  height: 85px;
+  bottom: 0;
+  background-color: var(--theme1);
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.5);
+}
+.bottom_section textarea {
+  padding: 5px 5px 5px 5px;
+  height: 80px;
+  width: 90%;
+  background-color: var(--theme2);
+  border: none;
+  color: white;
+  border-radius: 15px;
+  resize: none;
+}
+.bottom_section textarea:focus {
+  outline: none;
+  border: none;
+}
+.bottom_section textarea:disabled {
+  background-color: var(--theme1);
+  color: var(--theme5);
+}
+
+pre {
+  background-color: var(--theme2);
+  padding: 5px;
+}
+
+.btn_style {
+  background-color: var(--theme3);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.btn_style:hover {
+  background-color: var(--theme4);
+}
+.btn_style:disabled {
+  background-color: var(--theme2);
+  color: var(--theme5);
+  cursor: not-allowed;
+}
+
+.thinking {
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  padding: 5px;
+}
+
+.question {
+  background-color: var(--theme3);
+  color: white;
+  padding: 5px;
+  width: max-content;
+  border-radius: 5px;
+}

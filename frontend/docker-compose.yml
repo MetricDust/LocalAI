@@ -1,0 +1,13 @@
+services:
+    frontend:
+        container_name: LocAi-frontend-1
+        build:
+            context: .
+            args:
+                - REACT_APP_API_BASE_URL=http://localhost:8000
+        environment:
+            - REACT_APP_API_BASE_URL=http://localhost:8000
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./src:/app/src
