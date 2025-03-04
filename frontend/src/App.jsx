@@ -15,14 +15,11 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-
         let llms = data.models.map((llm) => ({
           model: llm.model,
           family: llm.details.family,
           parameter_size: llm.details.parameter_size,
         }));
-        console.log(llms);
-
         setLlmList(llms);
       })
       .catch((error) => console.error("Error fetching models:", error));
