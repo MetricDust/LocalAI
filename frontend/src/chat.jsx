@@ -12,7 +12,7 @@ const Chat = ({ selectedLLM }) => {
   const [response, setResponse] = useState("");
   const abortControllerRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     setResponse("");
     setPrompt("");
@@ -57,11 +57,8 @@ const Chat = ({ selectedLLM }) => {
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value, { stream: true });
-
         aiResponse += chunk;
-
         let res = marked.parse(aiResponse);
         setResponse(res);
       }
