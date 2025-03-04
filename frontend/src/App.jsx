@@ -47,42 +47,6 @@ function App() {
               {selectedLLM !== llm.model && <FaCircle className="text-info" />}
             </div>
           ))}
-
-          {/* <div className="link" onClick={() => setSelectedLLM("llama3.2:3b")}>
-            Llama (3 billion)
-            {selectedLLM === "llama3.2:3b" && (
-              <FaCircleCheck className="text-success" />
-            )}
-            {selectedLLM !== "llama3.2:3b" && (
-              <FaCircle className="text-info" />
-            )}
-          </div>
-          <div className="link" onClick={() => setSelectedLLM("phi:2.7b")}>
-            Phi (2.7 billion)
-            {selectedLLM === "phi:2.7b" && (
-              <FaCircleCheck className="text-success" />
-            )}
-            {selectedLLM !== "phi:2.7b" && <FaCircle className="text-info" />}
-          </div>
-          <div className="link" onClick={() => setSelectedLLM("gemma:2b")}>
-            Gemma (2 billion)
-            {selectedLLM === "gemma:2b" && (
-              <FaCircleCheck className="text-success" />
-            )}
-            {selectedLLM !== "gemma:2b" && <FaCircle className="text-info" />}
-          </div>
-          <div
-            className="link"
-            onClick={() => setSelectedLLM("deepseek-r1:1.5b")}
-          >
-            Deepseek (1.5 billion)
-            {selectedLLM === "deepseek-r1:1.5b" && (
-              <FaCircleCheck className="text-success" />
-            )}
-            {selectedLLM !== "deepseek-r1:1.5b" && (
-              <FaCircle className="text-info" />
-            )}
-          </div> */}
         </div>
         <div className="col-10 p-0">
           <div className="all_chat">
