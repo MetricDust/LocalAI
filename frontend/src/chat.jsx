@@ -40,7 +40,7 @@ const Chat = ({ selectedLLM }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ model: selectedLLM, prompt: prompt }),
-        signal: abortControllerRef.current.signal, // Pass the signal to the fetch
+        signal: abortControllerRef.current.signal, 
       });
 
       if (!res.ok) {
