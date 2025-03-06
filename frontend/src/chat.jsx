@@ -10,8 +10,8 @@ const Chat = ({ selectedLLM }) => {
   const [prompt, setPrompt] = useState("");
   const [question, setQuestion] = useState("");
   const [response, setResponse] = useState("");
-  const abortControllerRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     setResponse("");
@@ -40,11 +40,12 @@ const Chat = ({ selectedLLM }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ model: selectedLLM, prompt: prompt }),
-        signal: abortControllerRef.current.signal, 
+        signal: abortControllerRef.current.signal,
       });
 
       if (!res.ok) {
         console.error("Failed to fetch response");
+        alert("Failed to fetch response");
         setLoading(false);
         return;
       }
@@ -64,6 +65,7 @@ const Chat = ({ selectedLLM }) => {
       }
     } catch (error) {
       if (error.name !== "AbortError") {
+        alert("Failed to fetch response");
         console.error("Error in streaming:", error);
       }
     } finally {
