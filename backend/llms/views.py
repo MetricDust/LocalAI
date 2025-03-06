@@ -1,3 +1,5 @@
+import json
+import time
 import ollama
 
 from django.shortcuts import render
@@ -40,13 +42,33 @@ def models(request):
     if request.method == 'PUT':
         try:
             model = request.data.get("model", "llama3.2:3b")
-            for i in ollama.pull(model=model, stream=True):
-                print(i)
-            return Response(content_type="text/plain", status=status.HTTP_200_OK)
+            def generate():
+                for progress in ollama.pull(model=model, stream=True):
+                    digest = progress.get('digest', '')
+                    progress_bar = progress.get('status', '')
 
+                    if digest:
+                        total = progress.get('total', 1)
+                        completed = progress.get('completed', 0)
+                        progress_bar = generate_progress_bar(completed, total)
+
+                    yield f"data: {progress_bar}\n\n"
+                    time.sleep(2)  # Simulate delay for smooth streaming
+
+                yield f"data: {json.dumps({'status': 'Completed'})}\n\n"
+            return StreamingHttpResponse(generate(), content_type="text/event-stream")
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+def generate_progress_bar(completed, total, length=20):
+    """Generate a visual text progress bar"""
+    if not total:
+        return "[....................] 0%"
+    progress = int((completed / total) * length)
+    bar = f"[{'#' * progress}{'.' * (length - progress)}] {int((completed / total) * 100)}%"
+    return bar
+
 
 @api_view(['POST'])
 def ensamble_chat(request):

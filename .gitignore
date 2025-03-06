@@ -2,8 +2,7 @@ frontend/node_modules
 frontend/package-lock.json
 
 backend/venv
-backend/__pycache__
 
 backend/.venv
 backend/poetry.lock
-backend/llms/__pycache__
+**/__pycache__/
