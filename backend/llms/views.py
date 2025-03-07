@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from django.http import StreamingHttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, renderer_classes
+import tqdm
 
 # Create your views here.
 @api_view(["POST"])
@@ -19,7 +20,7 @@ def completions(request):
         """Generator function for real-time streaming AI responses."""
         try:
             for chunk in ollama.chat(model=model, messages=[{"role": "user", "content": prompt}], stream=True):
-                yield chunk.get("message", {}).get("content", "")  
+                yield f'data: {chunk.get("message", {}).get("content", "")}' 
         except Exception as e:
             yield f"data: Error: {str(e)}\n\n"
 
@@ -43,31 +44,29 @@ def models(request):
         try:
             model = request.data.get("model", "llama3.2:3b")
             def generate():
+                current_digest, bars = '', {}
                 for progress in ollama.pull(model=model, stream=True):
                     digest = progress.get('digest', '')
-                    progress_bar = progress.get('status', '')
+                    if not digest:
+                        print(progress.get('status'))
+                        continue
 
-                    if digest:
-                        total = progress.get('total', 1)
-                        completed = progress.get('completed', 0)
-                        progress_bar = generate_progress_bar(completed, total)
+                    if digest not in bars and (total := progress.get('total')):
+                        digest = tqdm.tqdm(total=total, desc=f'pulling {model}', unit='B', unit_scale=True)
+                        bars[digest] = digest
 
-                    yield f"data: {progress_bar}\n\n"
-                    time.sleep(2)  # Simulate delay for smooth streaming
+                    if completed := progress.get('completed'):
+                        bars[digest].update(completed - bars[digest].n)
+                        
+                    current_digest = digest
+                    current_digest.close()
 
-                yield f"data: {json.dumps({'status': 'Completed'})}\n\n"
+                    yield f"data: {current_digest}\n\n"
             return StreamingHttpResponse(generate(), content_type="text/event-stream")
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-def generate_progress_bar(completed, total, length=20):
-    """Generate a visual text progress bar"""
-    if not total:
-        return "[....................] 0%"
-    progress = int((completed / total) * length)
-    bar = f"[{'#' * progress}{'.' * (length - progress)}] {int((completed / total) * 100)}%"
-    return bar
 
 
 @api_view(['POST'])
