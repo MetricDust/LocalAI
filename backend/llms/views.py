@@ -50,7 +50,7 @@ def models(request):
 
                     if total > 0:
                         percentage = (completed / total) * 100
-                        yield f"data: pulling {model}... {percentage:.2f}%\n\n"
+                        yield f"pulling {model}... {percentage:.2f}%\n\n"
             return StreamingHttpResponse(generate(), content_type="text/event-stream")
         except Exception as e:
             import traceback
