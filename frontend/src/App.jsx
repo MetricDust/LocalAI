@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Chat from "./chat";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
@@ -12,6 +12,7 @@ function App() {
   const [llmList, setLlmList] = useState([]);
   const [newModel, setNewModel] = useState("");
   const [progress, setProgress] = useState("");
+  const newModelRef = useRef(null);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/models`)
@@ -45,6 +46,7 @@ function App() {
         if (done) {
           setProgress("");
           setNewModel("");
+          newModelRef.current.value = "";
           break;
         }
         const chunk = decoder.decode(value, { stream: true });
@@ -88,11 +90,17 @@ function App() {
                 <input
                   type="text"
                   placeholder="Model name"
+                  ref={newModelRef}
                   onChange={(e) => setNewModel(e.target.value)}
+                  disabled={progress !== ""}
                 />
               </div>
               <div className="col-2 p-0 ">
-                <button onClick={addModel} className="btn_style">
+                <button
+                  onClick={addModel}
+                  className="btn_style"
+                  disabled={progress !== ""}
+                >
                   <FaPlus />
                 </button>
               </div>
