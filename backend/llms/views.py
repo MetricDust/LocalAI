@@ -20,7 +20,7 @@ def completions(request):
         """Generator function for real-time streaming AI responses."""
         try:
             for chunk in ollama.chat(model=model, messages=[{"role": "user", "content": prompt}], stream=True):
-                yield f'data: {chunk.get("message", {}).get("content", "")}' 
+                yield f'{chunk.get("message", {}).get("content", "")}' 
         except Exception as e:
             yield f"data: Error: {str(e)}\n\n"
 
@@ -44,24 +44,13 @@ def models(request):
         try:
             model = request.data.get("model", "llama3.2:3b")
             def generate():
-                current_digest, bars = '', {}
                 for progress in ollama.pull(model=model, stream=True):
-                    digest = progress.get('digest', '')
-                    if not digest:
-                        print(progress.get('status'))
-                        continue
+                    total = progress.get('total', 1)  # Avoid division by zero
+                    completed = progress.get('completed', 0)
 
-                    if digest not in bars and (total := progress.get('total')):
-                        digest = tqdm.tqdm(total=total, desc=f'pulling {model}', unit='B', unit_scale=True)
-                        bars[digest] = digest
-
-                    if completed := progress.get('completed'):
-                        bars[digest].update(completed - bars[digest].n)
-                        
-                    current_digest = digest
-                    current_digest.close()
-
-                    yield f"data: {current_digest}\n\n"
+                    if total > 0:
+                        percentage = (completed / total) * 100
+                        yield f"data: pulling {model}... {percentage:.2f}%\n\n"
             return StreamingHttpResponse(generate(), content_type="text/event-stream")
         except Exception as e:
             import traceback
