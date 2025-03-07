@@ -44,7 +44,7 @@ function App() {
       while (true) {
         const { value, done } = await reader.read();
         if (done) {
-          setProgress("");
+          setProgress("New model added successfully! Reload the page.");
           setNewModel("");
           newModelRef.current.value = "";
           break;
