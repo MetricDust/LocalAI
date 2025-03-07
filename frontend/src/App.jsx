@@ -11,6 +11,7 @@ function App() {
   const [selectedLLM, setSelectedLLM] = useState("llama3.2:3b");
   const [llmList, setLlmList] = useState([]);
   const [newModel, setNewModel] = useState("");
+  const [progress, setProgress] = useState("");
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/models`)
@@ -24,17 +25,10 @@ function App() {
         setLlmList(llms);
       })
       .catch((error) => console.error("Error fetching models:", error));
-
-    const eventSource = new EventSource(`${API_BASE_URL}/models`);
-    eventSource.onmessage = (event) => {
-      console.log(event.data);
-    };
   }, []);
 
   const addModel = async () => {
     //  deepseek-r1:1.5b
-    console.log(newModel);
-
     try {
       const res = await fetch(`${API_BASE_URL}/models`, {
         method: "PUT",
@@ -43,16 +37,19 @@ function App() {
         },
         body: JSON.stringify({ model: newModel }),
       });
-
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      const { value, done } = await reader.read();
 
       while (true) {
         const { value, done } = await reader.read();
-        if (done) break;
-
-        console.log(decoder.decode(value));
+        if (done) {
+          setProgress("");
+          setNewModel("");
+          break;
+        }
+        const chunk = decoder.decode(value, { stream: true });
+        console.log(chunk);
+        setProgress(chunk);
       }
     } catch (error) {}
   };
@@ -100,7 +97,7 @@ function App() {
                 </button>
               </div>
             </div>
-            <div></div>
+            <div className="col-12 p-0">{progress}</div>
           </div>
         </div>
         <div className="col-10 p-0">
