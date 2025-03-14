@@ -1,3 +1,5 @@
+![Repository Logo](frontend/public/favicon.ico)
+
 # LocAI - Local AI Chat Interface 🤖
 
 A lightweight and efficient chat interface for interacting with local AI models through Ollama.
