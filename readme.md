@@ -1,4 +1,4 @@
-![Repository Logo](frontend/public/favicon.ico)
+![LocalAI Logo](frontend/public/favicon.ico)
 
 # LocAI - Local AI Chat Interface 🤖
 
